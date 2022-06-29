@@ -1,4 +1,4 @@
-package com.Backend_Homework2;
+package com.BackendHomework2;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

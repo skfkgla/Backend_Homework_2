@@ -1,4 +1,4 @@
-package com.Backend_Homework2;
+package com.BackendHomework2;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
