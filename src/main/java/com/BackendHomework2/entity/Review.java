@@ -4,10 +4,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Id;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Table(name = "review")
 @Entity
@@ -15,8 +15,9 @@ import java.util.UUID;
 @NoArgsConstructor
 public class Review {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "review_idx")
+    private Long reviewIdx;
 
     @Column(name = "review_id")
     private String reviewId;
@@ -27,14 +28,22 @@ public class Review {
     @Column(name = "place_id")
     private String placeId;
 
-    @Column(name = "attached_photo_ids")
-    private String attachedPhotoIds;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_idx")
+    private User user;
+
+    @OneToMany
+    @JoinColumn(name="review_idx")
+    private List<Photo> photoList = new ArrayList<>();
 
     @Builder
-    public Review(String reviewId, String content, String placeId, String attachedPhotoIds){
+    public Review(String reviewId, String content, String placeId, User user){
         this.reviewId = reviewId;
         this.content = content;
         this.placeId = placeId;
-        this.attachedPhotoIds = attachedPhotoIds;
+        this.user = user;
+    }
+    public void addPhoto(Photo photo){
+        this.photoList.add(photo);
     }
 }
