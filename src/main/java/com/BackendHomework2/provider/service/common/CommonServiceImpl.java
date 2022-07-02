@@ -22,6 +22,7 @@ public class CommonServiceImpl implements CommonService {
     private final PhotoRepository photoRepository;
     private final ReviewEventRepository reviewEventRepository;
     private final UserRepository userRepository;
+    private final ReviewRepository reviewRepository;
 
     // TODO 포인트 이력 등록
 
@@ -36,17 +37,19 @@ public class CommonServiceImpl implements CommonService {
         reviewEventRepository.save(reviewEvent);
     }
 
-    // TODO Photo 등록 및 photo 리스트 반환
+    // TODO Photo 등록
 
     @Override
     @Transactional
     public void registerPhoto(List<String> photoIds, String reviewId){
+        Review review= reviewRepository.findByReviewId(reviewId);
         for(String photoId : photoIds){
             Photo photo = com.BackendHomework2.entity.Photo.builder()
                     .photoId(photoId)
-                    .reviewId(reviewId)
+                    .review(review)
                     .build();
             photoRepository.save(photo);
+            review.addPhoto(photo);
         }
     }
 }

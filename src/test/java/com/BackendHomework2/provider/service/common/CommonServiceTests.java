@@ -1,4 +1,4 @@
-package com.BackendHomework2.provider.service;
+package com.BackendHomework2.provider.service.common;
 
 import com.BackendHomework2.core.service.common.CommonService;
 import com.BackendHomework2.core.type.MileageEventType;
@@ -46,6 +46,19 @@ public class CommonServiceTests {
         for(int i=0; i< 10; i++){
             Photo.add("photo number "+i);
         }
+        User user = User.builder()
+                .userId("userId")
+                .mileage(0)
+                .build();
+        userRepository.save(user);
+
+        Review review = Review.builder()
+                .content("좋아요")
+                .placeId("제주도")
+                .user(user)
+                .reviewId("reviewId")
+                .build();
+        reviewRepository.save(review);
 
         commonService.registerPhoto(Photo, "reviewId");
         List<com.BackendHomework2.entity.Photo> photoList = photoRepository.findByReviewId("reviewId");
@@ -53,7 +66,6 @@ public class CommonServiceTests {
         //위의 추가한 리스트와 같은지 테스트
         for(int i=0; i < photoList.size(); i++){
             assertEquals(photoList.get(i).getPhotoId(),"photo number "+i);
-            assertEquals(photoList.get(i).getReviewId(),"reviewId");
         }
     }
     @Transactional
@@ -65,10 +77,19 @@ public class CommonServiceTests {
                 .mileage(0)
                 .build();
         userRepository.save(user);
+
+        Review review = Review.builder()
+                .content("좋아요")
+                .placeId("제주도")
+                .user(user)
+                .reviewId("reviewId")
+                .build();
+        reviewRepository.save(review);
+
         List<String> photoList = new ArrayList<>();
             Photo photo = Photo.builder()
                     .photoId("photo")
-                    .reviewId("reviewId")
+                    .review(review)
                     .build();
             photoList.add("photo");
 
@@ -82,7 +103,7 @@ public class CommonServiceTests {
                 .type(MileageEventType.REVIEW)
                 .build();
 
-        commonService.registerReviewEvents(eventDto, 3);
+        commonService.registerReviewEvents(eventDto, 1);
         List<ReviewEvent> reviewEvents = reviewEventRepository.findByReviewId("reviewId");
         assertNotNull(reviewEvents);
     }
@@ -96,12 +117,6 @@ public class CommonServiceTests {
                 .build();
         userRepository.save(user);
 
-        Photo photo = Photo.builder()
-                .reviewId("reviewId")
-                .photoId("photoId")
-                .build();
-        photoRepository.save(photo);
-
         Review review = Review.builder()
                 .content("좋아요")
                 .placeId("제주도")
@@ -109,6 +124,13 @@ public class CommonServiceTests {
                 .reviewId("reviewId")
                 .build();
         reviewRepository.save(review);
+
+        Photo photo = Photo.builder()
+                .review(review)
+                .photoId("photoId")
+                .build();
+        photoRepository.save(photo);
+
         review.addPhoto(photo);
 
         user.updateMileage(3+ user.getMileage());

@@ -6,9 +6,11 @@ import com.BackendHomework2.core.service.common.CommonService;
 import com.BackendHomework2.core.type.MileageEventType;
 import com.BackendHomework2.entity.Photo;
 import com.BackendHomework2.entity.Review;
+import com.BackendHomework2.entity.ReviewEvent;
 import com.BackendHomework2.entity.User;
 import com.BackendHomework2.exception.error.DuplicateReviewException;
 import com.BackendHomework2.exception.error.NotFoundMileageTypeException;
+import com.BackendHomework2.exception.error.NotFoundReviewException;
 import com.BackendHomework2.repository.PhotoRepository;
 import com.BackendHomework2.repository.ReviewEventRepository;
 import com.BackendHomework2.repository.ReviewRepository;
@@ -18,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -48,20 +51,20 @@ public class ReviewEventsServiceImpl implements ReviewEventsService {
         }
 
         User user = userRepository.findByUserId(reviewEvnetDto.getUserId());    //리뷰를 남긴 유저 조회
-        int mileage = 0;
+        int mileage = user.getMileage();
 
         if(reviewEvnetDto.getContent().length() > 0){                                    // TODO 1
+            commonService.registerReviewEvents(reviewEvnetDto, 1);
             mileage++;
         }
         if(reviewEvnetDto.getAttachedPhotoIds().size() > 0){                             // TODO 2
+            commonService.registerReviewEvents(reviewEvnetDto, 1);
             mileage++;
         }
         if(reviewRepository.findByReviewId(reviewEvnetDto.getPlaceId()) == null){        // TODO 3
+            commonService.registerReviewEvents(reviewEvnetDto, 1);
             mileage++;
         }
-        commonService.registerPhoto(reviewEvnetDto.getAttachedPhotoIds(),reviewEvnetDto.getReviewId());   //사진 등록
-        commonService.registerReviewEvents(reviewEvnetDto, mileage);
-
         //리뷰 등록
         Review review = Review.builder()
                 .content(reviewEvnetDto.getContent())
@@ -70,12 +73,35 @@ public class ReviewEventsServiceImpl implements ReviewEventsService {
                 .user(user)
                 .build();
         reviewRepository.save(review);
-        for(Photo photo: photoRepository.findByReviewId(reviewEvnetDto.getReviewId())){
-            review.addPhoto(photo);
-        }
-
+        //사진 등록
+        commonService.registerPhoto(reviewEvnetDto.getAttachedPhotoIds(),review.getReviewId());
         user.updateMileage(mileage+user.getMileage());
         user.addReview(review);
-
     }
+
+    /*
+    TODO
+     Review action이 DELETE일 경우
+        1. 작성한 리뷰를 삭제하면 해당 리뷰로 부여한 내용 점수와 보너스 점수 회수
+    */
+    @Override
+    @Transactional
+    public void deleteReviewMileage(RequestReviewEvent.ReviewEvent reviewEvnetDto){
+        Review review = reviewRepository.findByReviewId(reviewEvnetDto.getReviewId());
+        if(null==review){    //review가 이미 삭제된 상태이면
+            throw new NotFoundReviewException();
+        }
+
+        List<ReviewEvent> reviewEventList= reviewEventRepository.findByReviewId(reviewEvnetDto.getReviewId());
+        int mileage = 0;
+        for(ReviewEvent reviewEvent : reviewEventList){
+            mileage+=reviewEvent.getPointSize();
+        }
+        User user = userRepository.findByUserId(reviewEvnetDto.getUserId());
+        user.updateMileage(user.getMileage() - mileage);
+        reviewRepository.delete(review);
+        commonService.registerReviewEvents(reviewEvnetDto, mileage);
+    }
+
+
 }
