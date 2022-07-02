@@ -1,9 +1,7 @@
 package com.BackendHomework2.exception;
 
 
-import com.BackendHomework2.exception.error.DuplicateReviewException;
-import com.BackendHomework2.exception.error.NotFoundMileageTypeException;
-import com.BackendHomework2.exception.error.NotFoundReviewActionTypeException;
+import com.BackendHomework2.exception.error.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -54,6 +52,30 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DuplicateReviewException.class)
     protected ResponseEntity<ErrorResponse> handleDuplicateReviewException(DuplicateReviewException e) {
         ErrorCode errorCode = ErrorCode.DUPLICATE_REVIEW_EXCEPTION;
+
+        ErrorResponse response = ErrorResponse.builder()
+                .code(errorCode.getCode())
+                .message(errorCode.getMessage())
+                .status(errorCode.getStatus().value())
+                .build();
+
+        return new ResponseEntity<>(response, errorCode.getStatus());
+    }
+    @ExceptionHandler(NotFoundUserException.class)
+    protected ResponseEntity<ErrorResponse> handleNotFoundUserException(NotFoundUserException ex) {
+        ErrorCode errorCode = ErrorCode.NOT_FOUND_USER;
+
+        ErrorResponse response = ErrorResponse.builder()
+                .code(errorCode.getCode())
+                .message(errorCode.getMessage())
+                .status(errorCode.getStatus().value())
+                .build();
+
+        return new ResponseEntity<>(response, errorCode.getStatus());
+    }
+    @ExceptionHandler(NotFoundMileageException.class)
+    protected ResponseEntity<ErrorResponse> handleNotFoundMileageException(NotFoundMileageException ex) {
+        ErrorCode errorCode = ErrorCode.NOT_FOUND_MILEAGE;
 
         ErrorResponse response = ErrorResponse.builder()
                 .code(errorCode.getCode())

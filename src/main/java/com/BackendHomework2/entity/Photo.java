@@ -12,20 +12,21 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class Photo {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="photo_idx")
     private Long id;
 
     @Column(name = "photo_id")
     private String photoId;
 
-    @Column(name = "review_id")
-    private String reviewId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "review_idx")
+    private Review review;
 
     @Builder
-    public Photo(String photoId, String reviewId){
+    public Photo(String photoId, Review review){
         this.photoId = photoId;
-        this.reviewId = reviewId;
+        this.review = review;
     }
 
 }

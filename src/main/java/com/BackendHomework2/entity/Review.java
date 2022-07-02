@@ -32,8 +32,7 @@ public class Review {
     @JoinColumn(name = "user_idx")
     private User user;
 
-    @OneToMany
-    @JoinColumn(name="review_idx")
+    @OneToMany(mappedBy = "review",cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Photo> photoList = new ArrayList<>();
 
     @Builder
