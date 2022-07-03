@@ -7,4 +7,5 @@ import java.util.List;
 public interface ReviewEventsService {
     void addReviewMileage(RequestReviewEvent.ReviewEvent reviewEvnetDto);
     void deleteReviewMileage(RequestReviewEvent.ReviewEvent reviewEvnetDto);
+    void modifyReviewMileage(RequestReviewEvent.ReviewEvent reviewEvnetDto);
 }

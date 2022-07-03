@@ -7,7 +7,9 @@ import com.BackendHomework2.web.dto.RequestReviewEvent;
 
 import java.util.List;
 
-public interface CommonService {
+public interface ReviewCommonService {
+    Review registerReview(RequestReviewEvent.ReviewEvent reviewEvnetDto, User user);
     void registerReviewEvents(RequestReviewEvent.ReviewEvent reviewEvnetDto, int mileage);
-    void registerPhoto(List<String> photoIds, String review);
+    public void registerPhoto(List<String> photoIds, Review review);
+    void registerPhoto(String photoId,Review review);
 }

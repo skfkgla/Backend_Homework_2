@@ -42,7 +42,7 @@ public class ReviewEventsServiceTests {
     @Transactional
     @DisplayName("마일리지 등록 테스트")
     @Test
-    void reviewMileageAddTest() {
+    void addReviewMileageTest() {
         User user = User.builder()
                 .userId("userId")
                 .mileage(0)
@@ -71,6 +71,77 @@ public class ReviewEventsServiceTests {
         assertEquals(userObject.getMileage(),3);    //user에 제대로 마일리지가 적립 되는지
         assertEquals(photo.get(0).getPhotoId(),"photo number 1");   //photo에 제대로 들어가는지 reviewId로 찾았기 때문에 review가 매핑되어 있는지는 확인 불필요
         assertEquals(reviewEventList.size(), 3);    //리뷰 마일리지 ADD 이벤트가 조건 1,2,3을 충족하기 때문에 3개가 들어가야함
+    }
+    @Transactional
+    @DisplayName("마일리지 삭제 테스트")
+    @Test
+    void deleteReviewMileageTest() {
+        User user = User.builder()
+                .userId("userId")
+                .mileage(0)
+                .build();
+        userRepository.save(user);
+        List<String> Photo= new ArrayList<>();
+        Photo.add("photo number 1");
+        Photo.add("photo number 2");
+        RequestReviewEvent.ReviewEvent eventDtoNumber2 = RequestReviewEvent.ReviewEvent.builder()
+                .userId("userId")
+                .reviewId("reviewIdNumber1")
+                .action(ReviewActionType.ADD)
+                .attachedPhotoIds(Photo)
+                .content("좋아요!")
+                .placeId("제주도")
+                .type(MileageEventType.REVIEW)
+                .build();
+        RequestReviewEvent.ReviewEvent eventDtoNumber1 = RequestReviewEvent.ReviewEvent.builder()
+                .userId("userId")
+                .reviewId("reviewIdNumber2")
+                .action(ReviewActionType.ADD)
+                .attachedPhotoIds(Photo)
+                .content("좋아요!")
+                .placeId("제주도")
+                .type(MileageEventType.REVIEW)
+                .build();
+        reviewEventsService.addReviewMileage(eventDtoNumber1);  // addReview 쓰임
+        reviewEventsService.deleteReviewMileage(eventDtoNumber1);
+
+    }
+
+    @Transactional
+    @DisplayName("마일리지 수정 테스트")
+    @Test
+    void modifyReviewMileageTest() {
+        User user = User.builder()
+                .userId("userId")
+                .mileage(0)
+                .build();
+        userRepository.save(user);
+        List<String> Photo = new ArrayList<>();
+        Photo.add("photo number 1");
+        Photo.add("photo number 2");
+        List<String> nullPhoto = new ArrayList<>();
+        RequestReviewEvent.ReviewEvent eventDtoMileage3 = RequestReviewEvent.ReviewEvent.builder()
+                .userId("userId")
+                .reviewId("reviewId")
+                .action(ReviewActionType.ADD)
+                .attachedPhotoIds(Photo)
+                .content("좋아요!")
+                .placeId("제주도")
+                .type(MileageEventType.REVIEW)
+                .build();
+        RequestReviewEvent.ReviewEvent eventDtoMileage2 = RequestReviewEvent.ReviewEvent.builder()
+                .userId("userId")
+                .reviewId("reviewId")
+                .action(ReviewActionType.MOD)
+                .attachedPhotoIds(nullPhoto)
+                .content("좋아요!")
+                .placeId("제주도")
+                .type(MileageEventType.REVIEW)
+                .build();
+        reviewEventsService.addReviewMileage(eventDtoMileage3);  // addReview 쓰임
+        reviewEventsService.modifyReviewMileage(eventDtoMileage2);
+        assertEquals(2,user.getMileage());
+        assertEquals(4,reviewEventRepository.findByReviewId("reviewId").size());
     }
 
 }

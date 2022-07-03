@@ -1,6 +1,6 @@
 package com.BackendHomework2.provider.service.common;
 
-import com.BackendHomework2.core.service.common.CommonService;
+import com.BackendHomework2.core.service.common.ReviewCommonService;
 import com.BackendHomework2.core.type.MileageEventType;
 import com.BackendHomework2.core.type.ReviewActionType;
 import com.BackendHomework2.entity.Photo;
@@ -12,7 +12,6 @@ import com.BackendHomework2.repository.ReviewEventRepository;
 import com.BackendHomework2.repository.ReviewRepository;
 import com.BackendHomework2.repository.UserRepository;
 import com.BackendHomework2.web.dto.RequestReviewEvent;
-import org.hibernate.annotations.DynamicUpdate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +25,9 @@ import java.util.List;
 
 @SpringBootTest
 @ActiveProfiles("test") // 테스트서버 프로파일 적용
-public class CommonServiceTests {
+public class ReviewCommonServiceTests {
     @Autowired
-    private CommonService commonService;
+    private ReviewCommonService reviewCommonService;
     @Autowired
     private PhotoRepository photoRepository;
     @Autowired
@@ -60,7 +59,7 @@ public class CommonServiceTests {
                 .build();
         reviewRepository.save(review);
 
-        commonService.registerPhoto(Photo, "reviewId");
+        reviewCommonService.registerPhoto(Photo, review);
         List<com.BackendHomework2.entity.Photo> photoList = photoRepository.findByReviewId("reviewId");
 
         //위의 추가한 리스트와 같은지 테스트
@@ -103,12 +102,12 @@ public class CommonServiceTests {
                 .type(MileageEventType.REVIEW)
                 .build();
 
-        commonService.registerReviewEvents(eventDto, 1);
+        reviewCommonService.registerReviewEvents(eventDto, 1);
         List<ReviewEvent> reviewEvents = reviewEventRepository.findByReviewId("reviewId");
         assertNotNull(reviewEvents);
     }
     @Transactional
-    @DisplayName("마일리지 등록 테스트")
+    @DisplayName("마일리지 업데이트 테스트")
     @Test
     void updateMileageTest() {
         User user = User.builder()

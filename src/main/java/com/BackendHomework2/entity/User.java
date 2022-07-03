@@ -3,6 +3,8 @@ package com.BackendHomework2.entity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -16,8 +18,7 @@ import java.util.UUID;
 public class User {
     //userId를 받을 테이블
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_idx")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long userIdx;
 
     @Column(name="user_id")

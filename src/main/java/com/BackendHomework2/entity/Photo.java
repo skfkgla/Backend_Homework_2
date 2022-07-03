@@ -28,5 +28,8 @@ public class Photo {
         this.photoId = photoId;
         this.review = review;
     }
+    public void deleteReviewMapping(Review review){
+        this.review = null;
+    }
 
 }

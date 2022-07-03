@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Table(name = "review_event")
 @Entity
@@ -27,6 +28,8 @@ public class ReviewEvent {
     @Column(name = "point_size")
     private int pointSize;
 
+    @Column(name = "date_time")
+    private Date dateTime = new Date(); // date
 
     @Builder
     public ReviewEvent(ReviewActionType action, int pointSize, String reviewId){

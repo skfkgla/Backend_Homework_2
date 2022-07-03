@@ -26,7 +26,7 @@ public class UserMileageServiceTests {
     private UserMileageService userMileageService;
 
     @Transactional
-    @DisplayName("유저의 현재 마일리지 조회 테스트")
+    @DisplayName("유저 총 마일리지 조회 테스트")
     @Test
     void reviewMileageAddTest() {
         User user = User.builder()

@@ -18,7 +18,7 @@ public class UserMileageServiceImpl implements UserMileageService {
 
     /*
     TODO
-     포인트 총점 조회 서비스
+     유저 포인트 총점 조회 서비스
     */
 
     @Override
@@ -29,6 +29,7 @@ public class UserMileageServiceImpl implements UserMileageService {
                 throw new NotFoundUserException();
             }
             ResponseUserMileage.UserMileage mileage = ResponseUserMileage.UserMileage.builder()
+                    .userId(userId)
                     .userMileage(user.getMileage())
                     .build();
         return Optional.ofNullable(mileage);

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Id;
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Table(name = "review")
@@ -28,6 +29,9 @@ public class Review {
     @Column(name = "place_id")
     private String placeId;
 
+    @Column(name = "date_time")
+    private Date dateTime = new Date(); // date
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_idx")
     private User user;
@@ -44,5 +48,8 @@ public class Review {
     }
     public void addPhoto(Photo photo){
         this.photoList.add(photo);
+    }
+    public void updateContent(String content){
+        this.content = content;
     }
 }
