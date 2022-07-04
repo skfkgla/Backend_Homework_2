@@ -25,16 +25,16 @@ public class EventController {
         String message = "";
         switch (eventDto.getAction()) {
             case ADD:
-                reviewEventsService.addReviewMileage(eventDto);
-                message = "마일리지 추가 이벤트 성공";
+                reviewEventsService.addReviewAndMileage(eventDto);
+                message = "리뷰 추가 이벤트 성공";
                 break;
             case DELETE:
-                reviewEventsService.deleteReviewMileage(eventDto);
-                message = "마일리지 삭제 이벤트 성공";
+                reviewEventsService.deleteReviewAndMileage(eventDto);
+                message = "리뷰 삭제 이벤트 성공";
                 break;
             case MOD:
-                reviewEventsService.modifyReviewMileage(eventDto);
-                message = "마일리지 수정 이벤트 성공";
+                reviewEventsService.modifyReviewAndMileage(eventDto);
+                message = "리뷰 수정 이벤트 성공";
                 break;
             default:
                 throw new NotFoundReviewActionTypeException();

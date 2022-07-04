@@ -27,7 +27,7 @@ public class UserServiceTests {
     void registerUserTest() {
         String userId = "userId";
         userService.registerUser(userId);
-        User user = userRepository.findByUserId("usersId");
+        User user = userRepository.findByUserId("userId");
 
         assertNotNull(user);
         assertEquals(user.getMileage(),0);

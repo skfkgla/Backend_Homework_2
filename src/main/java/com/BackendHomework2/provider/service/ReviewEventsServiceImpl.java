@@ -40,7 +40,7 @@ public class ReviewEventsServiceImpl implements ReviewEventsService {
     */
     @Override
     @Transactional
-    public void addReviewMileage(RequestReviewEvent.ReviewEvent reviewEvnetDto){
+    public void addReviewAndMileage(RequestReviewEvent.ReviewEvent reviewEvnetDto){
         //예외 처리
         if(null != reviewRepository.findByPlaceIdAndUserId(reviewEvnetDto.getPlaceId(),reviewEvnetDto.getUserId())){    //TODO 조건
             throw new DuplicateReviewException();
@@ -76,7 +76,7 @@ public class ReviewEventsServiceImpl implements ReviewEventsService {
     */
     @Override
     @Transactional
-    public void deleteReviewMileage(RequestReviewEvent.ReviewEvent reviewEvnetDto){
+    public void deleteReviewAndMileage(RequestReviewEvent.ReviewEvent reviewEvnetDto){
         Review review = reviewRepository.findByReviewId(reviewEvnetDto.getReviewId());
         User user = userRepository.findByUserId(reviewEvnetDto.getUserId());
         //예외 처리
@@ -104,7 +104,7 @@ public class ReviewEventsServiceImpl implements ReviewEventsService {
     */
     @Override
     @Transactional
-    public void modifyReviewMileage(RequestReviewEvent.ReviewEvent reviewEventDto) {
+    public void modifyReviewAndMileage(RequestReviewEvent.ReviewEvent reviewEventDto) {
         Review review = reviewRepository.findByReviewId(reviewEventDto.getReviewId());
         User user = userRepository.findByUserId(reviewEventDto.getUserId());
         //예외 처리

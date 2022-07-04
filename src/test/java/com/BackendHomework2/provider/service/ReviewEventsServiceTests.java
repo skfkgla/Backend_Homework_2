@@ -42,7 +42,7 @@ public class ReviewEventsServiceTests {
     @Transactional
     @DisplayName("마일리지 등록 테스트")
     @Test
-    void addReviewMileageTest() {
+    void addReviewAndMileageTest() {
         User user = User.builder()
                 .userId("userId")
                 .mileage(0)
@@ -60,7 +60,7 @@ public class ReviewEventsServiceTests {
                 .placeId("제주도")
                 .type(MileageEventType.REVIEW)
                 .build();
-        reviewEventsService.addReviewMileage(eventDto);
+        reviewEventsService.addReviewAndMileage(eventDto);
 
         Review review = reviewRepository.findByReviewId("reviewId");
         User userObject = userRepository.findByUserId("userId");
@@ -75,7 +75,7 @@ public class ReviewEventsServiceTests {
     @Transactional
     @DisplayName("마일리지 삭제 테스트")
     @Test
-    void deleteReviewMileageTest() {
+    void deleteReviewAndMileageTest() {
         User user = User.builder()
                 .userId("userId")
                 .mileage(0)
@@ -102,15 +102,15 @@ public class ReviewEventsServiceTests {
                 .placeId("제주도")
                 .type(MileageEventType.REVIEW)
                 .build();
-        reviewEventsService.addReviewMileage(eventDtoNumber1);  // addReview 쓰임
-        reviewEventsService.deleteReviewMileage(eventDtoNumber1);
+        reviewEventsService.addReviewAndMileage(eventDtoNumber1);  // addReview 쓰임
+        reviewEventsService.deleteReviewAndMileage(eventDtoNumber1);
 
     }
 
     @Transactional
     @DisplayName("마일리지 수정 테스트")
     @Test
-    void modifyReviewMileageTest() {
+    void modifyReviewAndMileageTest() {
         User user = User.builder()
                 .userId("userId")
                 .mileage(0)
@@ -138,8 +138,8 @@ public class ReviewEventsServiceTests {
                 .placeId("제주도")
                 .type(MileageEventType.REVIEW)
                 .build();
-        reviewEventsService.addReviewMileage(eventDtoMileage3);  // addReview 쓰임
-        reviewEventsService.modifyReviewMileage(eventDtoMileage2);
+        reviewEventsService.addReviewAndMileage(eventDtoMileage3);  // addReview 쓰임
+        reviewEventsService.modifyReviewAndMileage(eventDtoMileage2);
         assertEquals(2,user.getMileage());
         assertEquals(4,reviewEventRepository.findByReviewId("reviewId").size());
     }

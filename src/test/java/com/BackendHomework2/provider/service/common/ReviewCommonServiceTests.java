@@ -51,21 +51,31 @@ public class ReviewCommonServiceTests {
                 .build();
         userRepository.save(user);
 
-        Review review = Review.builder()
+        Review jejuReview = Review.builder()
                 .content("좋아요")
                 .placeId("제주도")
                 .user(user)
-                .reviewId("reviewId")
+                .reviewId("jeju")
                 .build();
-        reviewRepository.save(review);
+        reviewRepository.save(jejuReview);
+        Review udoReview = Review.builder()
+                .content("좋아요")
+                .placeId("우도")
+                .user(user)
+                .reviewId("udo")
+                .build();
+        reviewRepository.save(udoReview);
 
-        reviewCommonService.registerPhoto(Photo, review);
-        List<com.BackendHomework2.entity.Photo> photoList = photoRepository.findByReviewId("reviewId");
+        reviewCommonService.registerPhoto("photoId", udoReview);
+        reviewCommonService.registerPhoto(Photo, jejuReview);
+        List<com.BackendHomework2.entity.Photo> jejuPhotoList = photoRepository.findByReviewId("jeju");
 
         //위의 추가한 리스트와 같은지 테스트
-        for(int i=0; i < photoList.size(); i++){
-            assertEquals(photoList.get(i).getPhotoId(),"photo number "+i);
+        for(int i=0; i < jejuPhotoList.size(); i++){
+            assertEquals(jejuPhotoList.get(i).getPhotoId(),"photo number "+i);
         }
+        Photo udoPhoto = photoRepository.findByPhotoId("photoId");
+        assertNotNull(udoPhoto);                                    //한개의 사진 등록 테스트
     }
     @Transactional
     @DisplayName("포인트 이력 등록 테스트")
