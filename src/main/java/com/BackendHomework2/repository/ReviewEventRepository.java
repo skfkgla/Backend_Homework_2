@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public interface ReviewEventRepository extends JpaRepository<ReviewEvent, String> {
+public interface ReviewEventRepository extends JpaRepository<ReviewEvent, Long> {
     List<ReviewEvent> findByReviewId(String reviewId);
 
     @Query(value = "select sum(pointSize) from ReviewEvent r "+

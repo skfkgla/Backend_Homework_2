@@ -7,5 +7,5 @@ import com.BackendHomework2.web.dto.ResponseUserMileage;
 import java.util.Optional;
 
 public interface UserMileageService {
-    Optional<ResponseUserMileage.UserMileage> getUserMileage(String userId);
+    Optional<ResponseUserMileage.UserMileageDto> getUserMileage(String userId);
 }

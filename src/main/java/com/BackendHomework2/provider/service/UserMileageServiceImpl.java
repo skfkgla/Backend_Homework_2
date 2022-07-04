@@ -16,19 +16,15 @@ import java.util.Optional;
 public class UserMileageServiceImpl implements UserMileageService {
     private final UserRepository userRepository;
 
-    /*
-    TODO
-     유저 포인트 총점 조회 서비스
-    */
-
+    // 유저 포인트 총점 조회 서비스
     @Override
     @Transactional(readOnly = true)
-    public Optional<ResponseUserMileage.UserMileage> getUserMileage(String userId){
+    public Optional<ResponseUserMileage.UserMileageDto> getUserMileage(String userId){
             User user = userRepository.findByUserId(userId);
             if(user == null){
                 throw new NotFoundUserException();
             }
-            ResponseUserMileage.UserMileage mileage = ResponseUserMileage.UserMileage.builder()
+            ResponseUserMileage.UserMileageDto mileage = ResponseUserMileage.UserMileageDto.builder()
                     .userId(userId)
                     .userMileage(user.getMileage())
                     .build();

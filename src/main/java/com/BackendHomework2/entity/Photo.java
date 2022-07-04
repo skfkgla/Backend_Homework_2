@@ -13,14 +13,13 @@ import javax.persistence.*;
 public class Photo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="photo_idx")
     private Long id;
 
     @Column(name = "photo_id")
     private String photoId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "review_idx")
+    @JoinColumn(name = "review_id")
     private Review review;
 
     @Builder

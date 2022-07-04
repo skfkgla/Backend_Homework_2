@@ -12,8 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
-    // TODO 회원 등록 서비스
-
+    // 회원 등록 서비스
     @Override
     @Transactional
     public void registerUser(String userId){

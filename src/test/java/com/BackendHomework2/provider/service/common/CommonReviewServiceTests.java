@@ -1,6 +1,6 @@
 package com.BackendHomework2.provider.service.common;
 
-import com.BackendHomework2.core.service.common.ReviewCommonService;
+import com.BackendHomework2.core.service.common.CommonReviewService;
 import com.BackendHomework2.core.type.MileageEventType;
 import com.BackendHomework2.core.type.ReviewActionType;
 import com.BackendHomework2.entity.Photo;
@@ -25,9 +25,9 @@ import java.util.List;
 
 @SpringBootTest
 @ActiveProfiles("test") // 테스트서버 프로파일 적용
-public class ReviewCommonServiceTests {
+public class CommonReviewServiceTests {
     @Autowired
-    private ReviewCommonService reviewCommonService;
+    private CommonReviewService commonReviewService;
     @Autowired
     private PhotoRepository photoRepository;
     @Autowired
@@ -66,8 +66,8 @@ public class ReviewCommonServiceTests {
                 .build();
         reviewRepository.save(udoReview);
 
-        reviewCommonService.registerPhoto("photoId", udoReview);
-        reviewCommonService.registerPhoto(Photo, jejuReview);
+        commonReviewService.registerPhoto("photoId", udoReview);
+        commonReviewService.registerPhotoList(Photo, jejuReview);
         List<com.BackendHomework2.entity.Photo> jejuPhotoList = photoRepository.findByReviewId("jeju");
 
         //위의 추가한 리스트와 같은지 테스트
@@ -81,6 +81,7 @@ public class ReviewCommonServiceTests {
     @DisplayName("포인트 이력 등록 테스트")
     @Test
     void registerReviewEventsTest() {
+        //given
         User user = User.builder()
                 .userId("userId")
                 .mileage(0)
@@ -102,7 +103,7 @@ public class ReviewCommonServiceTests {
                     .build();
             photoList.add("photo");
 
-        RequestReviewEvent.ReviewEvent eventDto = RequestReviewEvent.ReviewEvent.builder()
+        RequestReviewEvent.ReviewEventDto eventDto = RequestReviewEvent.ReviewEventDto.builder()
                 .userId("userId")
                 .reviewId("reviewId")
                 .action(ReviewActionType.ADD)
@@ -111,15 +112,17 @@ public class ReviewCommonServiceTests {
                 .placeId("제주도")
                 .type(MileageEventType.REVIEW)
                 .build();
-
-        reviewCommonService.registerReviewEvents(eventDto, 1);
+        //when
+        commonReviewService.registerReviewEvents(eventDto, 1);
         List<ReviewEvent> reviewEvents = reviewEventRepository.findByReviewId("reviewId");
+        //then
         assertNotNull(reviewEvents);
     }
     @Transactional
     @DisplayName("마일리지 업데이트 테스트")
     @Test
     void updateMileageTest() {
+        //given
         User user = User.builder()
                 .userId("userId")
                 .mileage(0)
@@ -141,11 +144,11 @@ public class ReviewCommonServiceTests {
         photoRepository.save(photo);
 
         review.addPhoto(photo);
-
+        //when
         user.updateMileage(3+ user.getMileage());
         user.addReview(review);
-
         User userObject = userRepository.findByUserId(user.getUserId());
+        //then
         assertEquals(userObject.getMileage(),3);
 
 

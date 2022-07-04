@@ -17,8 +17,7 @@ import java.util.List;
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "review_idx")
-    private Long reviewIdx;
+    private Long id;
 
     @Column(name = "review_id")
     private String reviewId;
@@ -29,11 +28,11 @@ public class Review {
     @Column(name = "place_id")
     private String placeId;
 
-    @Column(name = "date_time")
-    private Date dateTime = new Date(); // date
+    @Column(name = "create_at")
+    private Date createAt = new Date(); // date
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_idx")
+    @JoinColumn(name = "user_id")
     private User user;
 
     @OneToMany(mappedBy = "review",cascade = CascadeType.ALL, orphanRemoval = true)

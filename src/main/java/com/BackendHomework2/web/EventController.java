@@ -2,17 +2,16 @@ package com.BackendHomework2.web;
 
 import com.BackendHomework2.core.service.ReviewEventsService;
 import com.BackendHomework2.exception.error.NotFoundReviewActionTypeException;
-import com.BackendHomework2.web.dto.CommonResponse;
+import com.BackendHomework2.web.dto.common.CommonResponse;
 import com.BackendHomework2.web.dto.RequestReviewEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Map;
+import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,7 +20,7 @@ public class EventController {
     private final ReviewEventsService reviewEventsService;
 
     @PostMapping("/events")
-    public ResponseEntity<CommonResponse> mileageEventRegistration(@RequestBody RequestReviewEvent.ReviewEvent eventDto){
+    public ResponseEntity<CommonResponse> mileageEventRegistration(@Valid @RequestBody RequestReviewEvent.ReviewEventDto eventDto){
         String message = "";
         switch (eventDto.getAction()) {
             case ADD:

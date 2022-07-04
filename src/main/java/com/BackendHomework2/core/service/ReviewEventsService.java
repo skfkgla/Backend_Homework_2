@@ -5,7 +5,7 @@ import com.BackendHomework2.web.dto.RequestReviewEvent;
 import java.util.List;
 
 public interface ReviewEventsService {
-    void addReviewAndMileage(RequestReviewEvent.ReviewEvent reviewEvnetDto);
-    void deleteReviewAndMileage(RequestReviewEvent.ReviewEvent reviewEvnetDto);
-    void modifyReviewAndMileage(RequestReviewEvent.ReviewEvent reviewEvnetDto);
+    void addReviewAndMileage(RequestReviewEvent.ReviewEventDto reviewEvnetDto);
+    void deleteReviewAndMileage(RequestReviewEvent.ReviewEventDto reviewEvnetDto);
+    void modifyReviewAndMileage(RequestReviewEvent.ReviewEventDto reviewEvnetDto);
 }

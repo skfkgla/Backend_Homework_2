@@ -1,4 +1,4 @@
-package com.BackendHomework2.web.dto;
+package com.BackendHomework2.web.dto.common;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -12,7 +12,7 @@ public class CommonResponse {
     @Builder.Default // Builder default 지정
     private String id = UUID.randomUUID().toString(); // uuid
     @Builder.Default
-    private Date dateTime = new Date(); // date
+    private Date createAt = new Date(); // date
     private int status;
     private String message;
     private Object list;

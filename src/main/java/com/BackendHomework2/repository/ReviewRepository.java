@@ -10,8 +10,9 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public interface ReviewRepository extends JpaRepository<Review, String> {
+public interface ReviewRepository extends JpaRepository<Review, Long> {
     Review findByReviewId(String reviewId);
+    Review findByPlaceId(String reviewId);
 
     @Query("select r from Review r " +
             "join r.user u " +

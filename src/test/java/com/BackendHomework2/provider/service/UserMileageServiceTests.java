@@ -35,7 +35,7 @@ public class UserMileageServiceTests {
                 .build();
         userRepository.save(user);
 
-        ResponseUserMileage.UserMileage mileage = userMileageService.getUserMileage("userId").orElseThrow(()-> null);
+        ResponseUserMileage.UserMileageDto mileage = userMileageService.getUserMileage("userId").orElseThrow(()-> null);
 
         assertEquals(mileage.getUserMileage(),3);
 

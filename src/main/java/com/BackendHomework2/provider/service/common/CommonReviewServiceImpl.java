@@ -1,6 +1,6 @@
 package com.BackendHomework2.provider.service.common;
 
-import com.BackendHomework2.core.service.common.ReviewCommonService;
+import com.BackendHomework2.core.service.common.CommonReviewService;
 import com.BackendHomework2.entity.Photo;
 import com.BackendHomework2.entity.Review;
 import com.BackendHomework2.entity.ReviewEvent;
@@ -18,16 +18,17 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class ReviewCommonServiceImpl implements ReviewCommonService {
+public class CommonReviewServiceImpl implements CommonReviewService {
     private final PhotoRepository photoRepository;
     private final ReviewEventRepository reviewEventRepository;
-    private final UserRepository userRepository;
     private final ReviewRepository reviewRepository;
 
 
-    // TODO 리뷰 등록
+    //리뷰 등록
 
-    public Review registerReview(RequestReviewEvent.ReviewEvent reviewEvnetDto, User user){
+    @Override
+    @Transactional
+    public void registerReview(RequestReviewEvent.ReviewEventDto reviewEvnetDto, User user){
         Review review = Review.builder()
                 .content(reviewEvnetDto.getContent())
                 .placeId(reviewEvnetDto.getPlaceId())
@@ -36,14 +37,13 @@ public class ReviewCommonServiceImpl implements ReviewCommonService {
                 .build();
         reviewRepository.save(review);
         user.addReview(review);
-        return review;
     }
 
-    // TODO 포인트 이력 등록
+    //포인트 이력 등록
 
     @Override
     @Transactional
-    public void registerReviewEvents(RequestReviewEvent.ReviewEvent reviewEvnetDto, int mileage) {
+    public void registerReviewEvents(RequestReviewEvent.ReviewEventDto reviewEvnetDto, int mileage) {
         ReviewEvent reviewEvent = ReviewEvent.builder()
                 .action(reviewEvnetDto.getAction())
                 .reviewId(reviewEvnetDto.getReviewId())
@@ -52,11 +52,11 @@ public class ReviewCommonServiceImpl implements ReviewCommonService {
         reviewEventRepository.save(reviewEvent);
     }
 
-    // TODO 사진 등록(리스트형)
+    //사진 등록(리스트형)
 
     @Override
     @Transactional
-    public void registerPhoto(List<String> photoIds, Review review){
+    public void registerPhotoList(List<String> photoIds, Review review){
         for(String photoId : photoIds){
             Photo photo = com.BackendHomework2.entity.Photo.builder()
                     .photoId(photoId)
@@ -67,11 +67,11 @@ public class ReviewCommonServiceImpl implements ReviewCommonService {
         }
     }
 
-    // TODO 사진 등록
+    //사진 등록
 
     @Override
     @Transactional
-    public void registerPhoto(String photoId,Review review){
+    public void registerPhoto(String photoId, Review review){
             Photo photo = com.BackendHomework2.entity.Photo.builder()
                     .photoId(photoId)
                     .review(review)
@@ -79,5 +79,4 @@ public class ReviewCommonServiceImpl implements ReviewCommonService {
             photoRepository.save(photo);
             review.addPhoto(photo);
     }
-
 }

@@ -19,7 +19,7 @@ public class User {
     //userId를 받을 테이블
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long userIdx;
+    private Long id;
 
     @Column(name="user_id")
     private String userId;

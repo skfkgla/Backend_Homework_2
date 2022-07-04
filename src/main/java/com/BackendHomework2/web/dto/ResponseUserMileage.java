@@ -6,7 +6,7 @@ import lombok.Data;
 public class ResponseUserMileage {
     @Builder
     @Data
-    public static class UserMileage {
+    public static class UserMileageDto {
         private String userId;
         private int userMileage;
     }

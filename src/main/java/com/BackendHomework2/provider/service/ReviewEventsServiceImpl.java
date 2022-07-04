@@ -2,13 +2,14 @@ package com.BackendHomework2.provider.service;
 
 
 import com.BackendHomework2.core.service.ReviewEventsService;
-import com.BackendHomework2.core.service.common.ReviewCommonService;
+import com.BackendHomework2.core.service.common.CommonReviewService;
 import com.BackendHomework2.entity.Photo;
 import com.BackendHomework2.entity.Review;
 import com.BackendHomework2.entity.ReviewEvent;
 import com.BackendHomework2.entity.User;
 import com.BackendHomework2.exception.error.DuplicateReviewException;
 import com.BackendHomework2.exception.error.NotFoundReviewException;
+import com.BackendHomework2.exception.error.NotFoundUserException;
 import com.BackendHomework2.repository.PhotoRepository;
 import com.BackendHomework2.repository.ReviewEventRepository;
 import com.BackendHomework2.repository.ReviewRepository;
@@ -18,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -28,9 +28,8 @@ public class ReviewEventsServiceImpl implements ReviewEventsService {
     private final ReviewRepository reviewRepository;
     private final PhotoRepository photoRepository;
     private final ReviewEventRepository reviewEventRepository;
-    private final ReviewCommonService reviewCommonService;
+    private final CommonReviewService commonReviewService;
     /*
-    TODO
      Review action이 ADD일 경우
         1. 1자 이상의 리뷰 1점 추가
         2. 1장 이상의 사진 1점 추가
@@ -40,43 +39,46 @@ public class ReviewEventsServiceImpl implements ReviewEventsService {
     */
     @Override
     @Transactional
-    public void addReviewAndMileage(RequestReviewEvent.ReviewEvent reviewEvnetDto){
+    public void addReviewAndMileage(RequestReviewEvent.ReviewEventDto reviewEvnetDto){
+        User user = userRepository.findByUserId(reviewEvnetDto.getUserId());
         //예외 처리
-        if(null != reviewRepository.findByPlaceIdAndUserId(reviewEvnetDto.getPlaceId(),reviewEvnetDto.getUserId())){    //TODO 조건
+        if(null == user){
+            throw new NotFoundUserException();
+        }
+        if(null != reviewRepository.findByPlaceIdAndUserId(reviewEvnetDto.getPlaceId(), reviewEvnetDto.getUserId())){    // 조건
             throw new DuplicateReviewException();
         }
 
-        User user = userRepository.findByUserId(reviewEvnetDto.getUserId());    //리뷰를 남긴 유저 조회
         int mileage = user.getMileage();
 
-        if(reviewEvnetDto.getContent().length() > 0){                                    // TODO 1
-            reviewCommonService.registerReviewEvents(reviewEvnetDto, 1);
+        if(reviewEvnetDto.getContent().length() > 0){                                    // 1.
+            commonReviewService.registerReviewEvents(reviewEvnetDto, 1);
             mileage++;
         }
-        if(reviewEvnetDto.getAttachedPhotoIds().size() > 0){                             // TODO 2
-            reviewCommonService.registerReviewEvents(reviewEvnetDto, 1);
+        if(reviewEvnetDto.getAttachedPhotoIds().size() > 0){                             // 2.
+            commonReviewService.registerReviewEvents(reviewEvnetDto, 1);
             mileage++;
         }
-        if(reviewRepository.findByReviewId(reviewEvnetDto.getPlaceId()) == null){        // TODO 3
-            reviewCommonService.registerReviewEvents(reviewEvnetDto, 1);
+        if(reviewRepository.findByPlaceId(reviewEvnetDto.getPlaceId()) == null){         // 3.
+            commonReviewService.registerReviewEvents(reviewEvnetDto, 1);
             mileage++;
         }
         //리뷰 등록
-        Review review = reviewCommonService.registerReview(reviewEvnetDto, user);
+        commonReviewService.registerReview(reviewEvnetDto, user);
+        Review review = reviewRepository.findByReviewId(reviewEvnetDto.getReviewId());
         //사진 등록
-        reviewCommonService.registerPhoto(reviewEvnetDto.getAttachedPhotoIds(),review);
+        commonReviewService.registerPhotoList(reviewEvnetDto.getAttachedPhotoIds(), review);
         //user정보 업데이트
         user.updateMileage(mileage);
     }
 
     /*
-    TODO
      Review action이 DELETE일 경우
         1. 작성한 리뷰를 삭제하면 해당 리뷰로 부여한 내용 점수와 보너스 점수 회수
     */
     @Override
     @Transactional
-    public void deleteReviewAndMileage(RequestReviewEvent.ReviewEvent reviewEvnetDto){
+    public void deleteReviewAndMileage(RequestReviewEvent.ReviewEventDto reviewEvnetDto){
         Review review = reviewRepository.findByReviewId(reviewEvnetDto.getReviewId());
         User user = userRepository.findByUserId(reviewEvnetDto.getUserId());
         //예외 처리
@@ -88,13 +90,12 @@ public class ReviewEventsServiceImpl implements ReviewEventsService {
         //해당 리뷰의 총 포인트 계산
         int mileage = -reviewEventRepository.sumPointSizeByReviewId(review.getReviewId());
         //유저 정보 업데이트
-        user.updateMileage(user.getMileage() + mileage);            //TODO 1
+        user.updateMileage(user.getMileage() + mileage);            // 1.
         reviewRepository.delete(review);
-        reviewCommonService.registerReviewEvents(reviewEvnetDto, mileage);
+        commonReviewService.registerReviewEvents(reviewEvnetDto, mileage);
     }
 
     /*
-    TODO
      Review action이 MOD일 경우
         1. 글이 없던 리뷰에 글을 작성하면 1점 부여
         2. 글이 있던 리뷰에 글을 다 지우면 1점 회수
@@ -104,7 +105,7 @@ public class ReviewEventsServiceImpl implements ReviewEventsService {
     */
     @Override
     @Transactional
-    public void modifyReviewAndMileage(RequestReviewEvent.ReviewEvent reviewEventDto) {
+    public void modifyReviewAndMileage(RequestReviewEvent.ReviewEventDto reviewEventDto) {
         Review review = reviewRepository.findByReviewId(reviewEventDto.getReviewId());
         User user = userRepository.findByUserId(reviewEventDto.getUserId());
         //예외 처리
@@ -115,17 +116,17 @@ public class ReviewEventsServiceImpl implements ReviewEventsService {
 
         if(review.getContent().length() == 0 && reviewEventDto.getContent().length() != 0){     //TODO 1
             review.updateContent(reviewEventDto.getContent());
-            reviewCommonService.registerReviewEvents(reviewEventDto,1);
+            commonReviewService.registerReviewEvents(reviewEventDto,1);
             mileage++;
         }else if(review.getContent().length() != 0 && reviewEventDto.getContent().length() == 0){ //TODO 2
-            reviewCommonService.registerReviewEvents(reviewEventDto,-1);
+            commonReviewService.registerReviewEvents(reviewEventDto,-1);
             mileage--;
         }
         if(review.getPhotoList().size() == 0 && reviewEventDto.getAttachedPhotoIds().size() != 0){//TODO 3
-            reviewCommonService.registerReviewEvents(reviewEventDto,1);
+            commonReviewService.registerReviewEvents(reviewEventDto,1);
             mileage++;
         }else if(review.getPhotoList().size() != 0 && reviewEventDto.getAttachedPhotoIds().size() == 0){//TODO 4
-            reviewCommonService.registerReviewEvents(reviewEventDto,-1);
+            commonReviewService.registerReviewEvents(reviewEventDto,-1);
             mileage--;
         }
 
@@ -136,7 +137,7 @@ public class ReviewEventsServiceImpl implements ReviewEventsService {
             photoRepository.delete(photo);
         }
         reviewRepository.save(review);
-        reviewCommonService.registerPhoto(reviewEventDto.getAttachedPhotoIds(), review);
+        commonReviewService.registerPhotoList(reviewEventDto.getAttachedPhotoIds(), review);
         user.updateMileage(user.getMileage() + mileage);
     }
 }

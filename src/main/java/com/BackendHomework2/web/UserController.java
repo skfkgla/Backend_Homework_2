@@ -1,7 +1,7 @@
 package com.BackendHomework2.web;
 
 import com.BackendHomework2.core.service.UserService;
-import com.BackendHomework2.web.dto.CommonResponse;
+import com.BackendHomework2.web.dto.common.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,8 +16,8 @@ import java.util.Map;
 public class UserController {
     private final UserService userService;
     @PostMapping("/user/register")
-    public ResponseEntity<CommonResponse> registerUser(@RequestBody Map<String,String> userId){
-        userService.registerUser(userId.get("userId"));
+    public ResponseEntity<CommonResponse> registerUser(@RequestBody Map<String,String> map){
+        userService.registerUser(map.get("userId"));
 
         return new ResponseEntity<>(CommonResponse.builder()
                 .status(HttpStatus.OK.value())
