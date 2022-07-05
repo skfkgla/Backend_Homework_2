@@ -11,14 +11,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Table(name = "users")
+@Table(name = "users", indexes = {
+        @Index(name = "idx_user__userId", columnList = "user_id")
+})
 @Entity
 @Getter
 @NoArgsConstructor
 public class User {
     //userId를 받을 테이블
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name="user_id")

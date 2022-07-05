@@ -10,7 +10,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Table(name = "review")
+@Table(name = "review", indexes = {
+        @Index(name = "idx_review__reviewId", columnList = "review_id"),
+        @Index(name = "idx_review__reviewId__placeId", columnList = "review_id, place_id"),
+        @Index(name = "idx_review__placeId__userId", columnList = "place_id, user_id")
+        })
 @Entity
 @Getter
 @NoArgsConstructor
@@ -35,20 +39,22 @@ public class Review {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "review",cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Photo> photoList = new ArrayList<>();
 
     @Builder
-    public Review(String reviewId, String content, String placeId, User user){
+    public Review(String reviewId, String content, String placeId, User user) {
         this.reviewId = reviewId;
         this.content = content;
         this.placeId = placeId;
         this.user = user;
     }
-    public void addPhoto(Photo photo){
+
+    public void addPhoto(Photo photo) {
         this.photoList.add(photo);
     }
-    public void updateContent(String content){
+
+    public void updateContent(String content) {
         this.content = content;
     }
 }

@@ -13,11 +13,5 @@ public interface PhotoRepository extends JpaRepository<Photo, Long> {
             "where r.reviewId = :reviewId")
     List<Photo> findByReviewId(String reviewId);
 
-    @Query("select p from Photo p " +
-            "join p.review r " +
-            "where p.photoId = :photoId "+
-            "and r.reviewId = :reviewId")
-    Photo findByPhotoIdAndReviewId(String photoId, String reviewId);
-
     Photo findByPhotoId(String photoId);
 }

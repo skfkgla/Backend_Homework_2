@@ -9,13 +9,15 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.Date;
 
-@Table(name = "review_event")
+@Table(name = "review_event", indexes = {
+        @Index(name = "idx_reviewEvent__reviewId", columnList = "review_id")
+})
 @Entity
 @Getter
 @NoArgsConstructor
 public class ReviewEvent {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "review_id") //해당 유저의 review_id로 전체를 조회할 수 있도록 하면 연관관계가 필요 없음

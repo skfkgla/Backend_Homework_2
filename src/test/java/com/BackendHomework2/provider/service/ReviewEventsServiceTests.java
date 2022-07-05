@@ -12,8 +12,10 @@ import com.BackendHomework2.repository.ReviewEventRepository;
 import com.BackendHomework2.repository.ReviewRepository;
 import com.BackendHomework2.repository.UserRepository;
 import com.BackendHomework2.web.dto.RequestReviewEvent;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -21,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -37,6 +41,7 @@ public class ReviewEventsServiceTests {
     private ReviewEventRepository reviewEventRepository;
     @Autowired
     private ReviewEventsService reviewEventsService;
+
 
     @Transactional
     @DisplayName("리뷰와 마일리지 등록 테스트")
@@ -81,6 +86,7 @@ public class ReviewEventsServiceTests {
     @DisplayName("리뷰와 마일리지 삭제 테스트")
     @Test
     void deleteReviewAndMileageTest() {
+        long startTime = System.currentTimeMillis();
         //given
         User user = User.builder()
                 .userId("userId")
@@ -105,13 +111,15 @@ public class ReviewEventsServiceTests {
         Review review = reviewRepository.findByReviewId("reviewId");
         //then
         assertNull(review);
-
+        long stopTime = System.currentTimeMillis();
+        System.out.println(stopTime - startTime);
     }
 
     @Transactional
     @DisplayName("리뷰와 마일리지 수정 테스트")
     @Test
     void modifyReviewAndMileageTest() {
+        long startTime = System.currentTimeMillis();
         //given
         User user = User.builder()
                 .userId("userId")
@@ -147,6 +155,8 @@ public class ReviewEventsServiceTests {
         assertEquals(2,user.getMileage());
         assertEquals(4,reviewEventRepository.findByReviewId("reviewId").size());
         assertEquals(reviewRepository.findByReviewId("reviewId").getContent(),"싫어요!");
+        long stopTime = System.currentTimeMillis();
+        System.out.println(stopTime - startTime);
     }
 
 }
