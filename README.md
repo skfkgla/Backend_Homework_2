@@ -1,4 +1,10 @@
 # Backend_Homework_2
+## Used
+- maven
+- Java(1.8)
+- h2
+- flyway
+- Spring Data Jpa
 
 ## maven build
 ```bash
