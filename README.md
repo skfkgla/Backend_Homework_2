@@ -5,6 +5,7 @@
 - h2
 - flyway
 - Spring Data Jpa
+- Spring Boot
 
 ## maven build
 ```bash
