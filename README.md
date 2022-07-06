@@ -2,6 +2,7 @@
 ## Used
 - maven
 - Java(1.8)
+- JPQL
 - h2
 - flyway
 - Spring Data Jpa
