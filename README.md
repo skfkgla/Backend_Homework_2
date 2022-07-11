@@ -4,29 +4,23 @@
 - Java(1.8)
 - JPQL
 - h2
+- Mysql(8)
 - flyway
 - Spring Data Jpa
 - Spring Boot
+- docker
+- docker-compose
 
 ## maven build
 ```bash
-mvnw clean package
+mvnw clean package -DskipTests
 ```
-## maven run
+## docker-compose 실행
 프로파일과 실행 포트 지정
 ```bash
-mvnw spring-boot:run -Dspring-boot.run.profiles=local -Dspring-boot.run.jvmArguments='-Dserver.port=8080'
+docker-compose up --build
 ```
 
-
-
-## DB접속
-
-```bash
-url: localhost:8080/h2
-JDBC URL: jdbc:h2:mem:test
-id: sa
-```
 
 ## 순서
 ```bash
@@ -36,15 +30,15 @@ Post    /user/register
     userId : "String"
 }
 ```
+----
 ```bash
 //2. 리뷰 등록, 수정, 삭제 이벤트 실행
 ```
+---
 ```bash
 //3. 유저로 point조회
 Get     /point
 {
     userId : "String"
 }
-```
-
 ```
